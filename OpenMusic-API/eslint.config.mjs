@@ -2,6 +2,7 @@ import js from '@eslint/js';
 import globals from 'globals';
 import { defineConfig } from 'eslint/config';
 import daStyle from 'eslint-config-dicodingacademy';
+import prettierConfig from 'eslint-config-prettier';
 
 export default defineConfig([
   daStyle,
@@ -10,8 +11,15 @@ export default defineConfig([
     plugins: { js },
     extends: ['js/recommended'],
   },
+  { files: ['**/*.js'], languageOptions: { sourceType: 'commonjs' } },
   {
     files: ['**/*.{js,mjs,cjs}'],
     languageOptions: { globals: globals.browser },
   },
+  {
+    rules: {
+      'no-undef': 'off',
+    },
+  },
+  prettierConfig,
 ]);
