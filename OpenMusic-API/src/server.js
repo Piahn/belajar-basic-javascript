@@ -18,8 +18,8 @@ const SongService = require('./services/localStorage/SongService');
 const SongValidator = require('./validator/songs');
 
 const init = async () => {
-  const albumService = new AlbumService();
-  const songsService = new SongService(albumService);
+  const songsService = new SongService();
+  const albumService = new AlbumService(songsService);
   const server = Hapi.Server({
     port: process.env.PORT,
     host: process.env.HOST,

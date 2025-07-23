@@ -9,13 +9,6 @@ const SongValidator = {
       throw new InvariantError(validationResult.error.message);
     }
   },
-  validateQuery: (query) => {
-    const validationResult = SongQuerysSchema.validate(query);
-    if (validationResult.error) {
-      throw new InvariantError(validationResult.error.message);
-    }
-    return validationResult;
-  },
 };
 
 module.exports = SongValidator;

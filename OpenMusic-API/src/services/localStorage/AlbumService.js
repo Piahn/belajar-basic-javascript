@@ -3,8 +3,9 @@ const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
 
 class AlbumService {
-  constructor() {
+  constructor(songService) {
     this._albums = [];
+    this._songService = songService; // Simpan instance songService
   }
 
   addAlbum({ name, year }) {
@@ -30,10 +31,16 @@ class AlbumService {
 
   getAlbumById(id) {
     const album = this._albums.filter((album) => album.id === id)[0];
+
     if (!album) {
       throw new NotFoundError('Album tidak ditemukan');
     }
-    return album;
+    const songs = this._songService.getSongsByAlbumId(id);
+
+    return {
+      ...album,
+      songs,
+    };
   }
 
   editAlbumById(id, { name, year }) {

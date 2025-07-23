@@ -31,35 +31,25 @@ class SongsService {
     return id;
   }
 
-  getSongs(title = '', performer = '') {
-    if (title !== '') {
-      const songs = this._songs.filter((song) => song.title === title);
-      const response = {
-        status: 'success',
-        message: 'Lagu berhasil ditampilkan',
-        data: {
-          songs,
-        },
-      };
-      return response;
+  getSongs({ title, performer }) {
+    let filteredSongs = this._songs;
+
+    if (title) {
+      filteredSongs = filteredSongs.filter((song) =>
+        song.title.toLowerCase().includes(title.toLowerCase())
+      );
     }
 
-    if (performer !== '') {
-      const songs = this._songs.filter((song) => song.performer === performer);
-      const response = {
-        status: 'success',
-        message: 'Lagu berhasil ditampilkan',
-        data: {
-          songs,
-        },
-      };
-      return response;
+    if (performer) {
+      filteredSongs = filteredSongs.filter((song) =>
+        song.performer.toLowerCase().includes(performer.toLowerCase())
+      );
     }
 
-    return this._songs.map(({ id, title, performer }) => ({
-      id,
-      title,
-      performer,
+    return filteredSongs.map((song) => ({
+      id: song.id,
+      title: song.title,
+      performer: song.performer,
     }));
   }
 
@@ -95,6 +85,15 @@ class SongsService {
     }
 
     this._songs.splice(index, 1);
+  }
+
+  getSongsByAlbumId(albumId) {
+    const songs = this._songs.filter((song) => song.albumId === albumId);
+    return songs.map(({ id, title, performer }) => ({
+      id,
+      title,
+      performer,
+    }));
   }
 }
 
