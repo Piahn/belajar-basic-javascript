@@ -7,14 +7,14 @@ const ClientError = require('./exceptions/ClientError');
  * Import Album
  */
 const albums = require('./api/albums');
-const AlbumService = require('./services/localStorage/AlbumService');
+const AlbumService = require('./services/postgres/AlbumService');
 const AlbumValidator = require('./validator/albums');
 
 /**
  * Import Song
  */
 const songs = require('./api/songs');
-const SongService = require('./services/localStorage/SongService');
+const SongService = require('./services/postgres/SongService');
 const SongValidator = require('./validator/songs');
 
 const init = async () => {
