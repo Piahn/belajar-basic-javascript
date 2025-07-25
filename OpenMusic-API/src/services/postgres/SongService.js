@@ -31,17 +31,17 @@ class SongService {
     const values = [];
 
     if (title) {
-      conditions.push('LOWER(title) LIKE $' + (conditions.length + 1));
+      conditions.push(`LOWER(title) LIKE $${  conditions.length + 1}`);
       values.push(`%${title.toLowerCase()}%`);
     }
 
     if (performer) {
-      conditions.push('LOWER(performer) LIKE $' + (conditions.length + 1));
+      conditions.push(`LOWER(performer) LIKE $${  conditions.length + 1}`);
       values.push(`%${performer.toLowerCase()}%`);
     }
 
     if (conditions.length > 0) {
-      query += ' WHERE ' + conditions.join(' AND ');
+      query += ` WHERE ${  conditions.join(' AND ')}`;
     }
 
     const result = await this._pool.query(query, values);
