@@ -7,13 +7,13 @@ import prettierConfig from 'eslint-config-prettier';
 export default defineConfig([
   daStyle,
   {
-    files: ['**/*.{js,mjs,cjs}'],
+    files: ['src/**/*.{js,mjs,cjs}'],
     plugins: { js },
     extends: ['js/recommended'],
   },
-  { files: ['**/*.js'], languageOptions: { sourceType: 'commonjs' } },
+  { files: ['src/**/*.js'], languageOptions: { sourceType: 'commonjs' } },
   {
-    files: ['**/*.{js,mjs,cjs}'],
+    files: ['src/**/*.{js,mjs,cjs}'],
     languageOptions: { globals: globals.browser },
   },
   {
