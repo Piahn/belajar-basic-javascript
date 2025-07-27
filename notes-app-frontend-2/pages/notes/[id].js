@@ -2,12 +2,13 @@ import Head from 'next/head';
 import React, { Component } from 'react';
 import Link from 'next/link';
 import ContentEditable from 'react-contenteditable';
+import Router from 'next/router';
 import styles from './Note.module.scss';
 import FloatingButton from '../../components/Common/FloatingButton';
 import AnnounceBar from '../../components/Common/AnnounceBar';
 import { getBaseURL } from '../../lib/utils/storage';
 import { convertISODate } from '../../lib/utils/date';
-import fetcher from '../../lib/utils/fetcher';
+import { fetchWithAuthentication } from '../../lib/utils/fetcher';
 
 class Note extends Component {
   constructor(props) {
@@ -15,14 +16,23 @@ class Note extends Component {
     this.state = {
       note: null,
       isError: false,
+      accessToken: null,
     };
   }
 
   async componentDidMount() {
+    const accessToken = localStorage.getItem('accessToken');
+
+    if (!accessToken) {
+      alert('Mohon untuk login dulu.');
+      await Router.push('/login');
+      return;
+    }
+
     try {
       const { id } = this.props;
-      const { data: { note } } = await fetcher(`${getBaseURL()}notes/${id}`);
-      this.setState((prevState) => ({ ...prevState, note }));
+      const { data: { note } } = await fetchWithAuthentication(`${getBaseURL()}notes/${id}`);
+      this.setState((prevState) => ({ ...prevState, note, accessToken }));
     } catch (error) {
       this.setState((prevState) => ({ ...prevState, isError: true }));
     }
@@ -44,10 +54,14 @@ class Note extends Component {
   }
 
   renderSuccess() {
-    const { note } = this.state;
+    const { note, accessToken } = this.state;
     const {
-      id, title, body, createdAt, updatedAt, tags,
+      id, title, body, createdAt, updatedAt, tags, username = 'undefined',
     } = note;
+
+    if (!accessToken) {
+      return <></>;
+    }
 
     return (
       <div>
@@ -66,6 +80,11 @@ class Note extends Component {
               <p className={styles.detail_page__date}>
                 {createdAt === updatedAt ? `Created at ${convertISODate(createdAt)}`
                   : `Updated at ${convertISODate(updatedAt)}`}
+              </p>
+              <p className={styles.detail_page__owned}>
+                Owned by
+                {' '}
+                {username}
               </p>
               <div className={styles.detail_page__tags}>
                 {tags.map((tag) => <span key={tag} className={styles.tag}>{tag}</span>)}

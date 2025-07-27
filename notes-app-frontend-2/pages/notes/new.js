@@ -2,10 +2,12 @@ import Head from 'next/head';
 import React, { Component } from 'react';
 import ContentEditable from 'react-contenteditable';
 
+import Router from 'next/router';
 import styles from './New.module.scss';
 import AnnounceBar from '../../components/Common/AnnounceBar';
 import { getBaseURL } from '../../lib/utils/storage';
-import fetcher from '../../lib/utils/fetcher';
+import { fetchWithAuthentication } from '../../lib/utils/fetcher';
+import AuthenticationError from '../../lib/utils/AuthenticationError';
 
 class New extends Component {
   constructor(props) {
@@ -15,6 +17,7 @@ class New extends Component {
       body: '',
       tags: [],
       isFetching: false,
+      accessToken: null,
     };
 
     this.contentEditable = React.createRef();
@@ -23,6 +26,23 @@ class New extends Component {
     this.handleTagsChange = this.handleTagsChange.bind(this);
     this.handleBodyChange = this.handleBodyChange.bind(this);
     this.handleSaveNote = this.handleSaveNote.bind(this);
+  }
+
+  async componentDidMount() {
+    if (window) {
+      const accessToken = localStorage.getItem('accessToken');
+
+      if (!accessToken) {
+        alert('Mohon untuk login dulu');
+        await Router.push('/login');
+        return;
+      }
+
+      this.setState((prevState) => ({
+        ...prevState,
+        accessToken,
+      }));
+    }
   }
 
   handleTitleChange({ target }) {
@@ -56,8 +76,19 @@ class New extends Component {
       isFetching: true,
     }));
 
+    await this._fetch({ title, body, tags });
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  handleDiscardNote() {
+    if (window) {
+      window.location.href = '/';
+    }
+  }
+
+  async _fetch({ title, body, tags }) {
     try {
-      await fetcher(`${getBaseURL()}notes`, {
+      await fetchWithAuthentication(`${getBaseURL()}notes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -69,9 +100,16 @@ class New extends Component {
         window.location.href = '/';
       }
     } catch (error) {
-      if (window) {
-        alert(error.message);
+      if (error instanceof AuthenticationError) {
+        if (window) {
+          alert(error.message);
+        }
+
+        await Router.push('/login');
+        return;
       }
+
+      alert(error.message);
 
       this.setState((prevState) => ({
         ...prevState,
@@ -80,15 +118,15 @@ class New extends Component {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  handleDiscardNote() {
-    if (window) {
-      window.location.href = '/';
-    }
-  }
-
   render() {
-    const { title, body, isFetching } = this.state;
+    const {
+      title, body, isFetching, accessToken,
+    } = this.state;
+
+    if (!accessToken) {
+      return <></>;
+    }
+
     return (
       <div>
         <Head>

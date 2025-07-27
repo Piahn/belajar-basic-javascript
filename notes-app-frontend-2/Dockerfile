@@ -43,7 +43,6 @@ ENV NODE_ENV production
 # Use tini as the init system
 ENTRYPOINT ["/sbin/tini", "--"]
 
-# Expose Next.js default port
 EXPOSE 8080
 
 # Start the app directly to ensure it receives shutdown signals

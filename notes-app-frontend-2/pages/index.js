@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import React, { Component } from 'react';
+import Router from 'next/router';
 import HeadBar from '../components/Common/HeadBar';
 import AnnounceBar from '../components/Common/AnnounceBar';
 import Notes from '../components/Notes';
@@ -7,7 +8,8 @@ import FloatingButton from '../components/Common/FloatingButton';
 
 import styles from './Home.module.scss';
 import { getBaseURL } from '../lib/utils/storage';
-import fetcher from '../lib/utils/fetcher';
+import { fetchWithAuthentication } from '../lib/utils/fetcher';
+import AuthenticationError from '../lib/utils/AuthenticationError';
 
 const onAddNoteClick = () => {
   if (window) {
@@ -22,20 +24,48 @@ class Home extends Component {
       notes: [],
       empty: false,
       isError: false,
+      accessToken: null,
     };
   }
 
   async componentDidMount() {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      alert('Mohon untuk login dulu.');
+      await Router.push('/login');
+      return;
+    }
+    this.setState((prevState) => ({
+      ...prevState,
+      accessToken,
+    }));
+    await this._fetch();
+  }
+
+  async _fetch() {
     try {
-      const { data: { notes } } = await fetcher(`${getBaseURL()}notes`);
+      const { data: { notes } } = await fetchWithAuthentication(`${getBaseURL()}notes`);
       this.setState(() => ({ notes, empty: notes.length < 1 }));
     } catch (error) {
+      if (error instanceof AuthenticationError) {
+        if (window) {
+          alert(error.message);
+        }
+        // TODO redirect to login
+      }
       this.setState((prevState) => ({ ...prevState, isError: true }));
     }
   }
 
   render() {
-    const { notes, isError, empty } = this.state;
+    const {
+      notes, isError, empty, accessToken,
+    } = this.state;
+
+    if (!accessToken) {
+      return <></>;
+    }
+
     return (
       <div>
         <Head>
