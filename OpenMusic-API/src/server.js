@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
+const Jwt = require('@hapi/jwt');
 const ClientError = require('./exceptions/ClientError');
 
 /**
@@ -24,10 +25,19 @@ const users = require('./api/users');
 const UserService = require('./services/postgres/UserService');
 const UsersValidator = require('./validator/users');
 
+/**
+ * Import Authentications
+ */
+const authentications = require('./api/authentications');
+const AuthenticationsService = require('./services/postgres/AuthenticationsService');
+const TokenManager = require('./tokenize/TokenManager');
+const AuthenticationsValidator = require('./validator/authentications');
+
 const init = async () => {
   const songsService = new SongService();
   const albumService = new AlbumService(songsService);
   const usersService = new UserService();
+  const authenticationsService = new AuthenticationsService();
 
   const server = Hapi.Server({
     port: process.env.PORT,
@@ -39,6 +49,31 @@ const init = async () => {
     },
   });
 
+  // Plugins External
+  await server.register([
+    {
+      plugin: Jwt,
+    },
+  ]);
+
+  // mendefinisikan strategy autentikasi jwt
+  server.auth.strategy('openmusic_jwt', 'jwt', {
+    keys: process.env.ACCESS_TOKEN_KEY,
+    verify: {
+      aud: false,
+      iss: false,
+      sub: false,
+      maxAgeSec: process.env.ACCESS_TOKEN_AGE,
+    },
+    validate: (artifacts) => ({
+      isValid: true,
+      credentials: {
+        id: artifacts.decoded.payload.id,
+      },
+    }),
+  });
+
+  // Plugins Internal
   await server.register([
     {
       plugin: albums,
@@ -61,20 +96,47 @@ const init = async () => {
         validator: UsersValidator,
       },
     },
+    {
+      plugin: authentications,
+      options: {
+        authenticationsService,
+        usersService,
+        tokenManager: TokenManager,
+        validator: AuthenticationsValidator,
+      },
+    },
   ]);
 
   server.ext('onPreResponse', (request, h) => {
+    // mendapatkan konteks response dari request
     const { response } = request;
 
-    if (response instanceof ClientError) {
+    if (response instanceof Error) {
+      // penanganan client error secara internal.
+      if (response instanceof ClientError) {
+        const newResponse = h.response({
+          status: 'fail',
+          message: response.message,
+        });
+        newResponse.code(response.statusCode);
+        return newResponse;
+      }
+
+      // mempertahankan penanganan client error oleh hapi secara native, seperti 404, etc.
+      if (!response.isServer) {
+        return h.continue;
+      }
+
+      // penanganan server error sesuai kebutuhan
       const newResponse = h.response({
-        status: 'fail',
-        message: response.message,
+        status: 'error',
+        message: 'terjadi kegagalan pada server kami',
       });
-      newResponse.code(response.statusCode);
+      newResponse.code(500);
       return newResponse;
     }
 
+    // jika bukan error, lanjutkan dengan response sebelumnya (tanpa terintervensi)
     return h.continue;
   });
 
