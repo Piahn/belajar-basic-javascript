@@ -1,8 +1,9 @@
 const autoBind = require('auto-bind');
 
 class PlaylistsHandler {
-  constructor(playlistsService, validator) {
+  constructor(playlistsService, songsService, validator) {
     this._playlistsService = playlistsService;
+    this._songsService = songsService;
     this._validator = validator;
 
     autoBind(this);
@@ -50,6 +51,55 @@ class PlaylistsHandler {
     return {
       status: 'success',
       message: 'Playlist berhasil dihapus',
+    };
+  }
+
+  async postPlaylistSongHandler(request, h) {
+    this._validator.validatePlaylistSongPayload(request.payload);
+    const { id: playlistId } = request.params;
+    const { songId } = request.payload;
+    const { id: credentialId } = request.auth.credentials;
+
+    await this._playlistsService.verifyPlaylistAccess(playlistId, credentialId);
+    await this._songsService.getSongById(songId);
+    await this._playlistsService.addPlaylistSong(playlistId, songId);
+
+    const response = h.response({
+      status: 'success',
+      message: 'Lagu berhasil ditambahkan ke playlist',
+    });
+    response.code(201);
+    return response;
+  }
+
+  async getPlaylistSongsHandler(request) {
+    const { id: playlistId } = request.params;
+    const { id: credentialId } = request.auth.credentials;
+
+    await this._playlistsService.verifyPlaylistAccess(playlistId, credentialId);
+
+    const playlist = await this._playlistsService.getPlaylistSongs(playlistId);
+
+    return {
+      status: 'success',
+      data: {
+        playlist,
+      },
+    };
+  }
+
+  async deletePlaylistSongHandler(request) {
+    this._validator.validatePlaylistSongPayload(request.payload);
+    const { id: playlistId } = request.params;
+    const { songId } = request.payload;
+    const { id: credentialId } = request.auth.credentials;
+
+    await this._playlistsService.verifyPlaylistAccess(playlistId, credentialId);
+    await this._playlistsService.deletePlaylistSong(playlistId, songId);
+
+    return {
+      status: 'success',
+      message: 'Lagu berhasil dihapus dari playlist',
     };
   }
 }

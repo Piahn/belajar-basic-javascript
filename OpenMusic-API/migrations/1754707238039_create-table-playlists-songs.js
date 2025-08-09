@@ -3,27 +3,26 @@
 exports.shorthands = undefined;
 
 exports.up = (pgm) => {
-  pgm.createTable('users', {
+  pgm.createTable('playlistsongs', {
     id: {
       type: 'VARCHAR(50)',
       primaryKey: true,
     },
-    username: {
+    playlist_id: {
       type: 'VARCHAR(50)',
-      unique: true,
       notNull: true,
+      references: 'playlists(id)',
+      onDelete: 'cascade',
     },
-    password: {
-      type: 'TEXT',
+    song_id: {
+      type: 'VARCHAR(50)',
       notNull: true,
-    },
-    fullname: {
-      type: 'TEXT',
-      notNull: true,
+      references: 'songs(id)',
+      onDelete: 'cascade',
     },
   });
 };
 
 exports.down = (pgm) => {
-  pgm.dropTable('users');
+  pgm.dropTable('playlistsongs');
 };
