@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+
 exports.horthands = undefined;
 
 exports.up = (pgm) => {

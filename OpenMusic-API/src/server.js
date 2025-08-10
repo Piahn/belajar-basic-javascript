@@ -40,12 +40,20 @@ const playlists = require('./api/playlists');
 const PlaylistsService = require('./services/postgres/PlaylistsService');
 const PlaylistsValidator = require('./validator/playlists');
 
+/**
+ * Import Collaborations
+ */
+const collaborations = require('./api/collaborations');
+const CollaborationsService = require('./services/postgres/CollaborationsService');
+const CollaborationsValidator = require('./validator/collaborations');
+
 const init = async () => {
+  const collaborationsService = new CollaborationsService();
+  const playlistService = new PlaylistsService(collaborationsService);
   const songsService = new SongService();
   const albumService = new AlbumService(songsService);
   const usersService = new UserService();
   const authenticationsService = new AuthenticationsService();
-  const playlistService = new PlaylistsService();
 
   const server = Hapi.Server({
     port: process.env.PORT,
@@ -121,38 +129,51 @@ const init = async () => {
         validator: PlaylistsValidator,
       },
     },
+    {
+      plugin: collaborations,
+      options: {
+        collaborationsService,
+        playlistsService: playlistService,
+        usersService,
+        validator: CollaborationsValidator,
+      },
+    },
   ]);
 
   server.ext('onPreResponse', (request, h) => {
-    // mendapatkan konteks response dari request
     const { response } = request;
 
-    if (response instanceof Error) {
-      // penanganan client error secara internal.
-      if (response instanceof ClientError) {
-        const newResponse = h.response({
-          status: 'fail',
-          message: response.message,
-        });
-        newResponse.code(response.statusCode);
-        return newResponse;
-      }
-
-      // mempertahankan penanganan client error oleh hapi secara native, seperti 404, etc.
-      if (!response.isServer) {
-        return h.continue;
-      }
-
-      // penanganan server error sesuai kebutuhan
+    // Tangani error yang kita buat sendiri (ClientError)
+    if (response instanceof ClientError) {
       const newResponse = h.response({
-        status: 'error',
-        message: 'terjadi kegagalan pada server kami',
+        status: 'fail',
+        message: response.message,
       });
-      newResponse.code(500);
+      newResponse.code(response.statusCode);
       return newResponse;
     }
 
-    // jika bukan error, lanjutkan dengan response sebelumnya (tanpa terintervensi)
+    // Tangani error dari plugin/framework lain (seperti JWT)
+    if (response.isBoom) {
+      // Cek jika ini adalah error autentikasi dari plugin JWT
+      if (response.output.statusCode === 401) {
+        const newResponse = h.response({
+          status: 'fail',
+          message: 'Anda harus login untuk mengakses resource ini.',
+        });
+        newResponse.code(401);
+        return newResponse;
+      }
+
+      const newResponse = h.response({
+        status: 'fail',
+        message: response.message,
+      });
+      newResponse.code(response.output.statusCode);
+      return newResponse;
+    }
+
+    // Lanjutkan dengan respons asli jika bukan error
     return h.continue;
   });
 

@@ -5,8 +5,9 @@ const AuthorizationError = require('../../exceptions/AuthorizationError');
 const InvariantError = require('../../exceptions/InvariantError');
 
 class PlaylistsService {
-  constructor() {
+  constructor(collaborationsService) {
     this._pool = new Pool();
+    this._collaborationService = collaborationsService;
   }
 
   // CRUD untuk menambahkan playlist
@@ -28,8 +29,9 @@ class PlaylistsService {
     const query = {
       text: `SELECT playlists.id, playlists.name, users.username
              FROM playlists
-             INNER JOIN users ON playlists.owner = users.id
-             WHERE playlists.owner = $1`,
+             LEFT JOIN collaborations ON collaborations.playlist_id = playlists.id
+             LEFT JOIN users ON users.id = playlists.owner
+             WHERE playlists.owner = $1 OR collaborations.user_id = $1`,
       values: [owner],
     };
 
@@ -121,6 +123,11 @@ class PlaylistsService {
   }
 
   async getPlaylistSongActivities(playlistId) {
+    /**
+     * NOTE:
+     * @description Untuk mengambil semua aktivitas playlist
+     * @query playlist_song_activities = psa, users = u, songs = s
+     */
     const query = {
       text: `SELECT u.username, s.title, psa.action, psa.time
              FROM playlist_song_activities psa
@@ -143,6 +150,7 @@ class PlaylistsService {
     };
 
     const result = await this._pool.query(query);
+
     if (!result.rows.length) {
       throw new NotFoundError('Playlist tidak ditemukan');
     }
@@ -154,7 +162,18 @@ class PlaylistsService {
   }
 
   async verifyPlaylistAccess(playlistId, userId) {
-    await this.verifyPlaylistOwner(playlistId, userId);
+    try {
+      await this.verifyPlaylistOwner(playlistId, userId);
+    } catch (error) {
+      if (error instanceof NotFoundError) {
+        throw error;
+      }
+      try {
+        await this._collaborationService.verifyCollaborator(playlistId, userId);
+      } catch {
+        throw error;
+      }
+    }
   }
 }
 
