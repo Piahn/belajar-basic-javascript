@@ -109,6 +109,31 @@ class PlaylistsService {
     }
   }
 
+  // CRUD untuk activite playlist
+  async addPlaylistSongActivity(playlistId, songId, userId, action) {
+    const id = `p-activity-${nanoid(16)}`;
+    const time = new Date().toISOString();
+    const query = {
+      text: 'INSERT INTO playlist_song_activities (id, playlist_id, song_id, user_id, action, time) VALUES ($1, $2, $3, $4, $5, $6)',
+      values: [id, playlistId, songId, userId, action, time],
+    };
+    await this._pool.query(query);
+  }
+
+  async getPlaylistSongActivities(playlistId) {
+    const query = {
+      text: `SELECT u.username, s.title, psa.action, psa.time
+             FROM playlist_song_activities psa
+             JOIN users u ON psa.user_id = u.id
+             JOIN songs s ON psa.song_id = s.id
+             WHERE psa.playlist_id = $1
+             ORDER BY psa.time ASC`,
+      values: [playlistId],
+    };
+    const result = await this._pool.query(query);
+    return result.rows;
+  }
+
   // Validasi untuk mengakses playlist
 
   async verifyPlaylistOwner(id, owner) {
