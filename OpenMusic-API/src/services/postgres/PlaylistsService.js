@@ -66,34 +66,39 @@ class PlaylistsService {
   }
 
   async getPlaylistSongs(playlistId) {
-    const playlistQuery = {
-      text: `SELECT playlists.id, playlists.name, users.username
-             FROM playlists
-             LEFT JOIN users ON users.id = playlists.owner
-             WHERE playlists.id = $1`,
+    const query = {
+      text: `
+        SELECT 
+          p.id,
+          p.name,
+          u.username,
+          (
+            SELECT JSON_AGG(
+              JSON_BUILD_OBJECT(
+                'id', s.id,
+                'title', s.title,
+                'performer', s.performer
+              )
+            )
+            FROM playlistsongs ps
+            JOIN songs s ON s.id = ps.song_id
+            WHERE ps.playlist_id = p.id
+          ) as songs
+        FROM playlists p
+        LEFT JOIN users u ON u.id = p.owner
+        WHERE p.id = $1
+      `,
       values: [playlistId],
     };
 
-    const songsQuery = {
-      text: `SELECT songs.id, songs.title, songs.performer
-             FROM songs
-             JOIN playlistsongs ON songs.id = playlistsongs.song_id
-             WHERE playlistsongs.playlist_id = $1`,
-      values: [playlistId],
-    };
+    const result = await this._pool.query(query);
 
-    // Ambil playlist dan lagu dengan 2 query sekaligus (Janji)
-    const [playlistResult, songsResult] = await Promise.all([
-      this._pool.query(playlistQuery),
-      this._pool.query(songsQuery),
-    ]);
-
-    if (!playlistResult.rows.length) {
+    if (!result.rows.length) {
       throw new NotFoundError('Playlist tidak ditemukan');
     }
 
-    const playlist = playlistResult.rows[0];
-    playlist.songs = songsResult.rows;
+    const playlist = result.rows[0];
+    playlist.songs = playlist.songs || [];
 
     return playlist;
   }
