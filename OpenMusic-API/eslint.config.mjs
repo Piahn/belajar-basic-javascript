@@ -11,7 +11,13 @@ export default defineConfig([
     plugins: { js },
     extends: ['js/recommended'],
   },
-  { files: ['src/**/*.js'], languageOptions: { sourceType: 'commonjs' } },
+  {
+    files: ['src/**/*.js'], languageOptions: {
+      sourceType: 'commonjs', globals: {
+        ...globals.node,
+      },
+    }
+  },
   {
     files: ['src/**/*.{js,mjs,cjs}'],
     languageOptions: { globals: globals.browser },

@@ -50,7 +50,7 @@ class LikesService {
             // Coba dapatkan dari cache dulu
             const result = await this._cacheService.get(`likes:${albumId}`);
             return { count: JSON.parse(result), fromCache: true };
-        } catch (error) {
+        } catch {
             // Jika gagal atau datanya expiyet (expirationInSecond), ambil dari DB
             const query = {
                 text: 'SELECT COUNT(id) FROM user_album_likes WHERE album_id = $1',

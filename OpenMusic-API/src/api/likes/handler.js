@@ -39,7 +39,7 @@ class LikesHandler {
         return response;
     }
 
-    async deleteLikeAlbumHandler(request, h) {
+    async deleteLikeAlbumHandler(request) {
         const { id: credentialId } = request.auth.credentials;
         const { id: albumId } = request.params;
 
