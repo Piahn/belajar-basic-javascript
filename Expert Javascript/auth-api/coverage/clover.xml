@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1759758267465" clover="3.2.0">
-  <project timestamp="1759758267465" name="All files">
-    <metrics statements="121" coveredstatements="121" conditionals="38" coveredconditionals="38" methods="25" coveredmethods="25" elements="184" coveredelements="184" complexity="0" loc="121" ncloc="121" packages="9" files="16" classes="16"/>
+<coverage generated="1759935414445" clover="3.2.0">
+  <project timestamp="1759935414446" name="All files">
+    <metrics statements="149" coveredstatements="144" conditionals="58" coveredconditionals="56" methods="33" coveredmethods="31" elements="240" coveredelements="231" complexity="0" loc="149" ncloc="149" packages="10" files="18" classes="18"/>
     <package name="Applications.security">
-      <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
       <file name="PasswordHash.js" path="C:\Users\vian\Documents\Project-Ngoding\belajar-basic-javascript\Expert Javascript\auth-api\src\Applications\security\PasswordHash.js">
-        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
         <line num="3" count="1" type="stmt"/>
-        <line num="7" count="4" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="11" count="4" type="stmt"/>
       </file>
     </package>
     <package name="Applications.use_cases">
@@ -28,19 +29,19 @@
       <metrics statements="23" coveredstatements="23" conditionals="5" coveredconditionals="5" methods="5" coveredmethods="5"/>
       <file name="AuthenticationError.js" path="C:\Users\vian\Documents\Project-Ngoding\belajar-basic-javascript\Expert Javascript\auth-api\src\Commons\exceptions\AuthenticationError.js">
         <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-        <line num="1" count="1" type="stmt"/>
-        <line num="5" count="1" type="stmt"/>
-        <line num="6" count="1" type="stmt"/>
-        <line num="10" count="1" type="stmt"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="5" count="2" type="stmt"/>
+        <line num="6" count="2" type="stmt"/>
+        <line num="10" count="3" type="stmt"/>
       </file>
       <file name="ClientError.js" path="C:\Users\vian\Documents\Project-Ngoding\belajar-basic-javascript\Expert Javascript\auth-api\src\Commons\exceptions\ClientError.js">
         <metrics statements="6" coveredstatements="6" conditionals="3" coveredconditionals="3" methods="1" coveredmethods="1"/>
-        <line num="3" count="18" type="stmt"/>
-        <line num="5" count="18" type="cond" truecount="2" falsecount="0"/>
+        <line num="3" count="19" type="stmt"/>
+        <line num="5" count="19" type="cond" truecount="2" falsecount="0"/>
         <line num="6" count="1" type="stmt"/>
-        <line num="9" count="17" type="stmt"/>
-        <line num="10" count="17" type="stmt"/>
-        <line num="14" count="7" type="stmt"/>
+        <line num="9" count="18" type="stmt"/>
+        <line num="10" count="18" type="stmt"/>
+        <line num="14" count="8" type="stmt"/>
       </file>
       <file name="DomainErrorTranslator.js" path="C:\Users\vian\Documents\Project-Ngoding\belajar-basic-javascript\Expert Javascript\auth-api\src\Commons\exceptions\DomainErrorTranslator.js">
         <metrics statements="5" coveredstatements="5" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
@@ -65,17 +66,45 @@
         <line num="10" count="1" type="stmt"/>
       </file>
     </package>
+    <package name="Domains.authentications.entities">
+      <metrics statements="9" coveredstatements="9" conditionals="8" coveredconditionals="8" methods="2" coveredmethods="2"/>
+      <file name="NewAuth.js" path="C:\Users\vian\Documents\Project-Ngoding\belajar-basic-javascript\Expert Javascript\auth-api\src\Domains\authentications\entities\NewAuth.js">
+        <metrics statements="9" coveredstatements="9" conditionals="8" coveredconditionals="8" methods="2" coveredmethods="2"/>
+        <line num="3" count="3" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="12" count="3" type="cond" truecount="4" falsecount="0"/>
+        <line num="13" count="1" type="stmt"/>
+        <line num="16" count="2" type="cond" truecount="4" falsecount="0"/>
+        <line num="17" count="1" type="stmt"/>
+        <line num="22" count="1" type="stmt"/>
+      </file>
+    </package>
     <package name="Domains.users">
-      <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+      <metrics statements="4" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="2"/>
       <file name="UserRepository.js" path="C:\Users\vian\Documents\Project-Ngoding\belajar-basic-javascript\Expert Javascript\auth-api\src\Domains\users\UserRepository.js">
-        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+        <metrics statements="4" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="2"/>
         <line num="3" count="1" type="stmt"/>
         <line num="7" count="1" type="stmt"/>
-        <line num="11" count="4" type="stmt"/>
+        <line num="11" count="0" type="stmt"/>
+        <line num="15" count="4" type="stmt"/>
       </file>
     </package>
     <package name="Domains.users.entities">
-      <metrics statements="24" coveredstatements="24" conditionals="24" coveredconditionals="24" methods="4" coveredmethods="4"/>
+      <metrics statements="33" coveredstatements="33" conditionals="32" coveredconditionals="32" methods="6" coveredmethods="6"/>
+      <file name="LoginUser.js" path="C:\Users\vian\Documents\Project-Ngoding\belajar-basic-javascript\Expert Javascript\auth-api\src\Domains\users\entities\LoginUser.js">
+        <metrics statements="9" coveredstatements="9" conditionals="8" coveredconditionals="8" methods="2" coveredmethods="2"/>
+        <line num="3" count="3" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="12" count="3" type="cond" truecount="4" falsecount="0"/>
+        <line num="13" count="1" type="stmt"/>
+        <line num="16" count="2" type="cond" truecount="4" falsecount="0"/>
+        <line num="17" count="1" type="stmt"/>
+        <line num="22" count="1" type="stmt"/>
+      </file>
       <file name="RegisterUser.js" path="C:\Users\vian\Documents\Project-Ngoding\belajar-basic-javascript\Expert Javascript\auth-api\src\Domains\users\entities\RegisterUser.js">
         <metrics statements="14" coveredstatements="14" conditionals="14" coveredconditionals="14" methods="2" coveredmethods="2"/>
         <line num="3" count="15" type="stmt"/>
@@ -137,9 +166,9 @@
       </file>
     </package>
     <package name="Infrastructures.repository">
-      <metrics statements="16" coveredstatements="16" conditionals="2" coveredconditionals="2" methods="3" coveredmethods="3"/>
+      <metrics statements="20" coveredstatements="16" conditionals="4" coveredconditionals="2" methods="4" coveredmethods="3"/>
       <file name="UserRepositoryPostgres.js" path="C:\Users\vian\Documents\Project-Ngoding\belajar-basic-javascript\Expert Javascript\auth-api\src\Infrastructures\repository\UserRepositoryPostgres.js">
-        <metrics statements="16" coveredstatements="16" conditionals="2" coveredconditionals="2" methods="3" coveredmethods="3"/>
+        <metrics statements="20" coveredstatements="16" conditionals="4" coveredconditionals="2" methods="4" coveredmethods="3"/>
         <line num="1" count="2" type="stmt"/>
         <line num="2" count="2" type="stmt"/>
         <line num="3" count="2" type="stmt"/>
@@ -155,19 +184,27 @@
         <line num="29" count="3" type="stmt"/>
         <line num="34" count="3" type="stmt"/>
         <line num="36" count="3" type="stmt"/>
-        <line num="40" count="2" type="stmt"/>
+        <line num="40" count="0" type="stmt"/>
+        <line num="45" count="0" type="stmt"/>
+        <line num="47" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="48" count="0" type="stmt"/>
+        <line num="53" count="2" type="stmt"/>
       </file>
     </package>
     <package name="Infrastructures.security">
-      <metrics statements="6" coveredstatements="6" conditionals="1" coveredconditionals="1" methods="2" coveredmethods="2"/>
+      <metrics statements="10" coveredstatements="10" conditionals="3" coveredconditionals="3" methods="3" coveredmethods="3"/>
       <file name="BcryptPasswordHash.js" path="C:\Users\vian\Documents\Project-Ngoding\belajar-basic-javascript\Expert Javascript\auth-api\src\Infrastructures\security\BcryptPasswordHash.js">
-        <metrics statements="6" coveredstatements="6" conditionals="1" coveredconditionals="1" methods="2" coveredmethods="2"/>
+        <metrics statements="10" coveredstatements="10" conditionals="3" coveredconditionals="3" methods="3" coveredmethods="3"/>
         <line num="1" count="2" type="stmt"/>
-        <line num="5" count="2" type="stmt"/>
-        <line num="6" count="2" type="stmt"/>
-        <line num="7" count="2" type="stmt"/>
-        <line num="11" count="2" type="stmt"/>
-        <line num="15" count="2" type="stmt"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="6" count="4" type="stmt"/>
+        <line num="7" count="4" type="stmt"/>
+        <line num="8" count="4" type="stmt"/>
+        <line num="12" count="2" type="stmt"/>
+        <line num="16" count="2" type="stmt"/>
+        <line num="18" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="19" count="1" type="stmt"/>
+        <line num="24" count="2" type="stmt"/>
       </file>
     </package>
     <package name="Interfaces.http.api.users">
