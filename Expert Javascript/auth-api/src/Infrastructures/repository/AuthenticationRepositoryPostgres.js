@@ -12,7 +12,7 @@ class AuthenticationRepositoryPostgres extends AuthenticationRepository {
             text: 'INSERT INTO authentications VALUES($1)',
             values: [token],
         };
-        await this._pool(query);
+        await this._pool.query(query);
     }
 
     async checkAvailabilityToken(token) {

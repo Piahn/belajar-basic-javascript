@@ -26,7 +26,7 @@ class LoginUserUseCase {
 
         const newAuth = new NewAuth({ accessToken, refreshToken });
 
-        await this._authenticationRepository.addToken(newAuth.refreshToken); // belum bikin
+        await this._authenticationRepository.addToken(newAuth.refreshToken);
 
         return newAuth;
     }

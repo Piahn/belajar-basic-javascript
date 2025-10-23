@@ -73,4 +73,50 @@ describe('UserRepositoryPostgres', () => {
             }));
         });
     });
+
+    describe('getPasswordByUsername function', () => {
+        it('should throw InvariantError when user not found', async () => {
+            // Arrange
+            const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
+
+            // Action & Assert
+            await expect(userRepositoryPostgres.getPasswordByUsername('notfound'))
+                .rejects.toThrow(InvariantError);
+        });
+
+        it('should return encrypted password when user is found', async () => {
+            // Arrange
+            const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
+            await UsersTableTestHelper.addUser({ username: 'dicoding', password: 'encrypted_password' });
+
+            // Action
+            const password = await userRepositoryPostgres.getPasswordByUsername('dicoding');
+
+            // Assert
+            expect(password).toBe('encrypted_password');
+        });
+    });
+
+    describe('getIdByUsername function', () => {
+        it('should throw InvariantError when user not found', async () => {
+            // Arrange
+            const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
+
+            // Action & Assert
+            await expect(userRepositoryPostgres.getIdByUsername('notfound'))
+                .rejects.toThrow(InvariantError);
+        });
+
+        it('should return user id when user is found', async () => {
+            // Arrange
+            const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
+            await UsersTableTestHelper.addUser({ id: 'user-123', username: 'dicoding' });
+
+            // Action
+            const userId = await userRepositoryPostgres.getIdByUsername('dicoding');
+
+            // Assert
+            expect(userId).toBe('user-123');
+        });
+    });
 });
