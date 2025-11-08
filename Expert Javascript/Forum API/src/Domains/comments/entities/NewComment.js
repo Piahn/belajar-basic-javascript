@@ -1,4 +1,4 @@
-class NewCommant {
+class NewComment {
     constructor(payload) {
         this._verifyPayload(payload);
 
@@ -6,7 +6,7 @@ class NewCommant {
         this.content = content;
         this.threadId = threadId;
         this.owner = owner;
-    };
+    }
 
     _verifyPayload({ content, threadId, owner }) {
         if (!content || !threadId || !owner) {
@@ -19,4 +19,4 @@ class NewCommant {
     }
 }
 
-module.exports = NewCommant;
+module.exports = NewComment;

@@ -1,4 +1,4 @@
-const NewCommant = require('../NewComment');
+const NewComment = require('../NewComment');
 
 describe('a NewComment entities', () => {
     it('should throw error if payload does not meet criteria', () => {
@@ -10,7 +10,7 @@ describe('a NewComment entities', () => {
         };
 
         // action & assert
-        expect(() => new NewCommant(payload)).toThrow('NEW_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
+        expect(() => new NewComment(payload)).toThrow('NEW_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
     });
 
     it('should throw error if payload has invalid data type', () => {
@@ -22,7 +22,7 @@ describe('a NewComment entities', () => {
         };
 
         // action & assert
-        expect(() => new NewCommant(payload)).toThrow('NEW_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
+        expect(() => new NewComment(payload)).toThrow('NEW_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
     });
 
     it('should create NewComment object properly', () => {
@@ -35,7 +35,7 @@ describe('a NewComment entities', () => {
         };
 
         // Action
-        const newComment = new NewCommant(payload);
+        const newComment = new NewComment(payload);
 
         // Assert
         expect(newComment.content).toEqual(payload.content);
