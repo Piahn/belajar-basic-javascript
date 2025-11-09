@@ -10,7 +10,7 @@ const ServerTestHelper = {
       url: '/users',
       payload: {
         ...userPayload,
-        fullname: 'placeholder fullname',
+        fullname: 'Dicoding Indonesia',
       },
     });
 

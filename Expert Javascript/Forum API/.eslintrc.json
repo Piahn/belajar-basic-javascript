@@ -18,8 +18,8 @@
     "no-unused-vars": [
       "error",
       {
-        "argsIgnorePattern": "^_",
-        "varsIgnorePattern": "^_"
+        "argsIgnorePattern": "^",
+        "varsIgnorePattern": "^"
       }
     ],
     "max-len": [

@@ -1,7 +1,7 @@
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
 const ReplyRepository = require('../../../Domains/replies/ReplyRepository');
-const GetThreadUseCase = require('../Getthreadusecase');
+const GetThreadUseCase = require('../GetThreadUseCase');
 
 describe('GetThreadUseCase with Replies', () => {
   it('should orchestrating the get thread with replies action correctly', async () => {

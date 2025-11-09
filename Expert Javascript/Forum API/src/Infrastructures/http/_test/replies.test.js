@@ -9,6 +9,28 @@ const container = require('../../container');
 const createServer = require('../createServer');
 
 describe('endpoints concerning CRUD on replies', () => {
+  let server;
+  let accessToken;
+  let userId;
+  let threadId;
+  let commentId;
+
+  beforeAll(async () => {
+    server = await createServer(container);
+  });
+
+  beforeEach(async () => {
+    const { userId: newUserId, accessToken: newAccessToken } = await ServerTestHelper
+      .getAccessTokenAndUserIdHelper({ server, username: 'dicoding' });
+    userId = newUserId;
+    accessToken = newAccessToken;
+
+    threadId = 'thread-123';
+    commentId = 'comment-123';
+    await ThreadableTestHelper.addThread({ id: threadId, owner: userId });
+    await CommentsTableTestHelper.addComment({ id: commentId, threadId, owner: userId });
+  });
+
   afterEach(async () => {
     await UsersTableTestHelper.cleanTable();
     await ThreadableTestHelper.cleanTable();
@@ -28,16 +50,7 @@ describe('endpoints concerning CRUD on replies', () => {
         content: 'somekind of reply',
       };
 
-      const server = await createServer(container);
-
-      /* create first user and add thread and comment */
-      const { accessToken, userId } = await ServerTestHelper
-        .getAccessTokenAndUserIdHelper({ server });
-      const threadId = 'thread-123';
-      const commentId = 'comment-123';
-      await ThreadableTestHelper.addThread({ id: threadId, owner: userId });
-      await CommentsTableTestHelper.addComment({ id: commentId, owner: userId });
-
+      // action
       const response = await server.inject({
         method: 'POST',
         url: `/threads/${threadId}/comments/${commentId}/replies`,
@@ -46,6 +59,7 @@ describe('endpoints concerning CRUD on replies', () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+
       // assert
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(201);
@@ -61,16 +75,7 @@ describe('endpoints concerning CRUD on replies', () => {
       // arrange
       const requestPayload = {};
 
-      const server = await createServer(container);
-
-      /* create first user and add thread and comment */
-      const { accessToken, userId } = await ServerTestHelper
-        .getAccessTokenAndUserIdHelper({ server });
-      const threadId = 'thread-123';
-      const commentId = 'comment-123';
-      await ThreadableTestHelper.addThread({ id: threadId, owner: userId });
-      await CommentsTableTestHelper.addComment({ id: commentId, owner: userId });
-
+      // action
       const response = await server.inject({
         method: 'POST',
         url: `/threads/${threadId}/comments/${commentId}/replies`,
@@ -79,6 +84,7 @@ describe('endpoints concerning CRUD on replies', () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+
       // assert
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(400);
@@ -92,16 +98,7 @@ describe('endpoints concerning CRUD on replies', () => {
         content: 2021,
       };
 
-      const server = await createServer(container);
-
-      /* create first user and add thread and comment */
-      const { accessToken, userId } = await ServerTestHelper
-        .getAccessTokenAndUserIdHelper({ server });
-      const threadId = 'thread-123';
-      const commentId = 'comment-123';
-      await ThreadableTestHelper.addThread({ id: threadId, owner: userId });
-      await CommentsTableTestHelper.addComment({ id: commentId, owner: userId });
-
+      // action
       const response = await server.inject({
         method: 'POST',
         url: `/threads/${threadId}/comments/${commentId}/replies`,
@@ -110,6 +107,7 @@ describe('endpoints concerning CRUD on replies', () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+
       // assert
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(400);
@@ -121,17 +119,10 @@ describe('endpoints concerning CRUD on replies', () => {
   describe('on DELETE /threads/{threadId}/comments/{commentId}/replies/{replyId}', () => {
     it('should return with 200 and return success status', async () => {
       // arrange
-      const server = await createServer(container);
-
-      const { accessToken, userId } = await ServerTestHelper
-        .getAccessTokenAndUserIdHelper({ server });
-      const threadId = 'thread-123';
-      const commentId = 'comment-123';
       const replyId = 'reply-123';
-      await ThreadableTestHelper.addThread({ id: threadId, owner: userId });
-      await CommentsTableTestHelper.addComment({ id: commentId, owner: userId });
-      await RepliesTableTestHelper.addReply({ id: replyId, owner: userId });
+      await RepliesTableTestHelper.addReply({ id: replyId, commentId, owner: userId });
 
+      // action
       const response = await server.inject({
         method: 'DELETE',
         url: `/threads/${threadId}/comments/${commentId}/replies/${replyId}`,
@@ -139,6 +130,7 @@ describe('endpoints concerning CRUD on replies', () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+
       // assert
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(200);
@@ -147,22 +139,13 @@ describe('endpoints concerning CRUD on replies', () => {
 
     it('should return with 403 if user does not have access to reply', async () => {
       // arrange
-      const server = await createServer(container);
-
-      /* add first user and thread, comment and reply */
-      const { userId: firstUserId } = await ServerTestHelper
-        .getAccessTokenAndUserIdHelper({ server, username: 'JohnDoe' });
-      const threadId = 'thread-123';
-      const commentId = 'comment-123';
       const replyId = 'reply-123';
-      await ThreadableTestHelper.addThread({ id: threadId, owner: firstUserId });
-      await CommentsTableTestHelper.addComment({ id: commentId, owner: firstUserId });
-      await RepliesTableTestHelper.addReply({ id: replyId, owner: firstUserId });
+      await RepliesTableTestHelper.addReply({ id: replyId, commentId, owner: userId });
 
-      /* add second user */
       const { accessToken: secondAccessToken } = await ServerTestHelper
         .getAccessTokenAndUserIdHelper({ server, username: 'JaneDoe' });
 
+      // action
       const response = await server.inject({
         method: 'DELETE',
         url: `/threads/${threadId}/comments/${commentId}/replies/${replyId}`,
@@ -171,6 +154,7 @@ describe('endpoints concerning CRUD on replies', () => {
         },
       });
 
+      // assert
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(403);
       expect(responseJson.status).toEqual('fail');
@@ -179,18 +163,12 @@ describe('endpoints concerning CRUD on replies', () => {
 
     it('should return with 404 if reply is already deleted', async () => {
       // arrange
-      const server = await createServer(container);
-
-      /* add first user and thread, comment and reply */
-      const { accessToken, userId } = await ServerTestHelper
-        .getAccessTokenAndUserIdHelper({ server, username: 'JohnDoe' });
-      const threadId = 'thread-123';
-      const commentId = 'comment-123';
       const replyId = 'reply-123';
-      await ThreadableTestHelper.addThread({ id: threadId, owner: userId });
-      await CommentsTableTestHelper.addComment({ id: commentId, owner: userId });
-      await RepliesTableTestHelper.addReply({ id: replyId, owner: userId, isDeleted: true });
+      await RepliesTableTestHelper.addReply({
+        id: replyId, commentId, owner: userId, isDeleted: true,
+      });
 
+      // action
       const response = await server.inject({
         method: 'DELETE',
         url: `/threads/${threadId}/comments/${commentId}/replies/${replyId}`,
@@ -199,6 +177,7 @@ describe('endpoints concerning CRUD on replies', () => {
         },
       });
 
+      // assert
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(404);
       expect(responseJson.status).toEqual('fail');
