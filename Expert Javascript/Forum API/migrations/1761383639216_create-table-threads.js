@@ -5,7 +5,7 @@ exports.shorthands = undefined;
 exports.up = (pgm) => {
     pgm.createTable('threads', {
         id: {
-            type: 'VARCHAR(17)',
+            type: 'VARCHAR(50)',
             primaryKey: true,
         },
         title: {
@@ -17,7 +17,7 @@ exports.up = (pgm) => {
             notNull: true,
         },
         owner: {
-            type: 'VARCHAR(15)',
+            type: 'VARCHAR(50)',
             notNUll: true,
             references: 'users(id)',
             onDelete: 'CASCADE',

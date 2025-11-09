@@ -4,17 +4,17 @@ exports.shorthands = undefined;
 exports.up = (pgm) => {
     pgm.createTable('comments', {
         id: {
-            type: 'VARCHAR(18)',
+            type: 'VARCHAR(50)',
             primaryKey: true,
         },
         thread_id: {
-            type: 'VARCHAR(17)',
+            type: 'VARCHAR(50)',
             notNull: true,
             references: 'threads(id)',
             onDelete: 'CASCADE',
         },
         owner: {
-            type: 'VARCHAR(15)',
+            type: 'VARCHAR(50)',
             notNull: true,
             references: 'users(id)',
             onDelete: 'CASCADE',

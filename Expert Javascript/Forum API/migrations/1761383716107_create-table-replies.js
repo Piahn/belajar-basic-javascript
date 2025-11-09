@@ -4,7 +4,7 @@ exports.shorthands = undefined;
 exports.up = (pgm) => {
     pgm.createTable('replies', {
         id: {
-            type: 'VARCHAR(16)',
+            type: 'VARCHAR(50)',
             primaryKey: true,
         },
         comment_id: {
@@ -14,14 +14,14 @@ exports.up = (pgm) => {
             onDelete: 'CASCADE',
         },
         owner: {
-            type: 'VARCHAR(15)',
+            type: 'VARCHAR(50)',
             notNull: true,
+            references: 'users(id)',
+            onDelete: 'CASCADE',
         },
         content: {
             type: 'TEXT',
             notNull: true,
-            references: 'users(id)',
-            onDelete: 'CASCADE',
         },
         date: {
             type: 'TEXT',
