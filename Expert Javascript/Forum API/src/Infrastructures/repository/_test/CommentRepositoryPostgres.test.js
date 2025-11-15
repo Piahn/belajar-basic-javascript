@@ -44,6 +44,9 @@ describe('CommentRepositoryPostgres', () => {
       expect(comment.id).toEqual('comment-123');
       expect(comment.content).toEqual('sebuah comment');
       expect(comment.owner).toEqual('user-123');
+      expect(comment.thread_id).toEqual('thread-123');
+      expect(comment.date).toBeDefined();
+      expect(comment.is_deleted).toEqual(false);
     });
 
     it('should return added comment correctly', async () => {
@@ -77,6 +80,7 @@ describe('CommentRepositoryPostgres', () => {
         owner: 'user-123',
         content: 'sebuah comment',
         date: '2021-08-08T07:22:33.555Z',
+        isDeleted: false,
       });
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 
@@ -89,6 +93,7 @@ describe('CommentRepositoryPostgres', () => {
       expect(comments[0].username).toEqual('dicoding');
       expect(comments[0].content).toEqual('sebuah comment');
       expect(comments[0].date).toEqual('2021-08-08T07:22:33.555Z');
+      expect(comments[0].is_deleted).toEqual(false);
     });
 
     it('should return empty array when no comments', async () => {

@@ -47,6 +47,9 @@ describe('ReplyRepositoryPostgres', () => {
       expect(reply.id).toEqual('reply-123');
       expect(reply.content).toEqual('sebuah balasan');
       expect(reply.owner).toEqual('user-123');
+      expect(reply.comment_id).toEqual('comment-123');
+      expect(reply.date).toBeDefined();
+      expect(reply.is_deleted).toEqual(false);
     });
 
     it('should return added reply correctly', async () => {
@@ -80,6 +83,7 @@ describe('ReplyRepositoryPostgres', () => {
         owner: 'user-123',
         content: 'sebuah balasan',
         date: '2021-08-08T07:59:48.766Z',
+        isDeleted: false,
       });
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
@@ -93,6 +97,7 @@ describe('ReplyRepositoryPostgres', () => {
       expect(replies[0].content).toEqual('sebuah balasan');
       expect(replies[0].date).toEqual('2021-08-08T07:59:48.766Z');
       expect(replies[0].comment_id).toEqual('comment-123');
+      expect(replies[0].is_deleted).toEqual(false);
     });
 
     it('should return empty array when no replies', async () => {
