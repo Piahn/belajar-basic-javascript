@@ -42,9 +42,9 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     return result.rows[0];
   }
 
-  async getRepliesByThreadById(threadId) {
+  async verifyThreadExists(threadId) {
     const query = {
-      text: 'SELECT * FROM threads WHERE id = $1',
+      text: 'SELECT id FROM threads WHERE id = $1',
       values: [threadId],
     };
 
@@ -53,8 +53,6 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     if (!result.rowCount) {
       throw new NotFoundError('thread tidak ditemukan');
     }
-
-    return result.rows[0];
   }
 }
 
